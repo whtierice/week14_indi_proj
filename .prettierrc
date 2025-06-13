@@ -1,0 +1,5 @@
+{
+  "singleQuote": true,      # 문자열을 작은따옴표(')로 감싼다
+  "trailingComma": "es5",   # ES5 호환 객체/배열 마지막에 꼬리 쉼표(,) 허용
+  "printWidth": 80          # 한 줄 최대 길이는 80자
+}
