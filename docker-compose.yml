@@ -1,14 +1,43 @@
 services:
   db:
     image: postgres:15
+    restart: always
     environment:
       POSTGRES_USER: board_user
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: board_dev
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres-data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    volumes:
+      - ./backend:/app             # 코드 바뀔 때마다 컨테이너도 바로 반영
+      - /app/node_modules          # 호스트와의 node_modules 충돌 방지
+    ports:
+      - '3000:3000'
+    env_file:
+      - backend/.env               # DATABASE_URL, JWT_SECRET 등
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - '5173:5173'
+    env_file:
+      - frontend/.env.development  # VITE_API_BASE_URL 등을 정의
+    depends_on:
+      - backend
 
 volumes:
   postgres-data:
